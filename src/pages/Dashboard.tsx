@@ -64,23 +64,22 @@ const Dashboard: React.FC = () => {
   })();
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-2 flex flex-col gap-10 animate-fade-in-up">
-      <h2 className="text-4xl font-black mb-2 tracking-tight text-accent drop-shadow-lg text-center uppercase letter-spacing-[0.2em]">Trading Dashboard</h2>
+    <div className="max-w-5xl mx-auto py-12 px-4 flex flex-col gap-12 bg-gray-50 min-h-[90vh]">
+      <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-primary text-center">Trading Dashboard</h2>
       {error && <div className="text-loss font-bold mb-2 text-center">{error}</div>}
       {loading ? (
-        <div className="text-lg text-gray-300 animate-pulse text-center">載入中...</div>
+        <div className="text-lg text-gray-400 animate-pulse text-center">載入中...</div>
       ) : (
         <>
-          {/* KPI 卡片列 - 玻璃擬態 */}
-          <div className="flex gap-8 mb-8 flex-wrap justify-center">
-            <KpiCard label="總損益" value={total_pnl.toFixed(0)} trend={pnl_trend as any} color={total_pnl >= 0 ? '#228B22' : '#DC143C'} className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl hover:scale-105 hover:shadow-accent/40 transition-transform duration-200" />
-            <KpiCard label="勝率" value={`${(win_rate * 100).toFixed(1)}%`} trend={win_trend as any} color="#FBBF24" className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl hover:scale-105 hover:shadow-accent/40 transition-transform duration-200" />
-            <KpiCard label="平均風險回報比" value={avg_risk_reward.toFixed(2)} className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl hover:scale-105 hover:shadow-accent/40 transition-transform duration-200" />
+          {/* KPI 卡片列 - Notion 風格白底卡片 */}
+          <div className="flex gap-6 mb-6 flex-wrap justify-center">
+            <KpiCard label="總損益" value={total_pnl.toFixed(0)} trend={pnl_trend as any} color={total_pnl >= 0 ? '#228B22' : '#DC143C'} className="bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg transition-all duration-200" />
+            <KpiCard label="勝率" value={`${(win_rate * 100).toFixed(1)}%`} trend={win_trend as any} color="#FBBF24" className="bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg transition-all duration-200" />
+            <KpiCard label="平均風險回報比" value={avg_risk_reward.toFixed(2)} className="bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg transition-all duration-200" />
           </div>
-          {/* 權益曲線 - 玻璃卡片+漸層+陰影 */}
-          <div className="rounded-3xl p-10 mb-8 shadow-2xl bg-gradient-to-br from-white/20 via-primary/60 to-accent/10 border border-white/20 backdrop-blur-xl relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none" style={{background: 'radial-gradient(ellipse at 60% 0%, #FBBF2440 0%, transparent 70%)'}} />
-            <h3 className="text-2xl font-bold mb-4 text-accent drop-shadow text-center">權益曲線</h3>
+          {/* 權益曲線 - 白底卡片+分隔+留白 */}
+          <div className="rounded-2xl p-8 mb-6 shadow bg-white border border-gray-200 flex flex-col gap-4">
+            <h3 className="text-xl font-bold mb-2 text-primary text-center">權益曲線</h3>
             <div className="w-full overflow-x-auto flex justify-center">
               <svg width={Math.max(320, equityCurve.length * 40)} height="120">
                 <defs>
@@ -102,13 +101,13 @@ const Dashboard: React.FC = () => {
               </svg>
             </div>
           </div>
-          {/* 近期交易快覽 - 現代化表格 */}
-          <div className="rounded-3xl p-10 shadow-2xl bg-gradient-to-br from-white/20 via-primary/60 to-accent/10 border border-white/20 backdrop-blur-xl animate-fade-in-up">
-            <h3 className="text-2xl font-bold mb-4 text-accent drop-shadow text-center">近期交易</h3>
+          {/* 近期交易快覽 - Notion 風格表格 */}
+          <div className="rounded-2xl p-8 shadow bg-white border border-gray-200 animate-fade-in-up">
+            <h3 className="text-xl font-bold mb-4 text-primary text-center">近期交易</h3>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-base rounded-2xl overflow-hidden shadow bg-white/10 backdrop-blur-xl border border-white/10">
+              <table className="min-w-full text-base rounded-xl overflow-hidden shadow bg-white border border-gray-100">
                 <thead>
-                  <tr className="text-accent border-b border-accent/30 bg-white/10">
+                  <tr className="text-primary border-b border-gray-200 bg-gray-50">
                     <th className="px-4 py-3 font-mono">#</th>
                     <th className="px-4 py-3">商品</th>
                     <th className="px-4 py-3">方向</th>
@@ -119,7 +118,7 @@ const Dashboard: React.FC = () => {
                 </thead>
                 <tbody>
                   {trades.slice(-5).reverse().map((t, i) => (
-                    <tr key={t.id} className="border-b border-accent/10 hover:bg-accent/10 transition-colors duration-150">
+                    <tr key={t.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150">
                       <td className="px-4 py-3 font-mono text-xs text-gray-400 text-center">{trades.length - i}</td>
                       <td className="px-4 py-3 font-bold text-center">{t.symbol}</td>
                       <td className={`px-4 py-3 font-mono text-center ${t.side === 'long' ? 'text-profit' : 'text-loss'}`}>{t.side === 'long' ? '多' : '空'}</td>
