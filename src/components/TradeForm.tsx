@@ -87,19 +87,21 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input name="symbol" value={form.symbol} onChange={handleChange} placeholder="標的" className="input" required />
-      <select name="side" value={form.side} onChange={handleChange} className="input">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <input name="symbol" value={form.symbol} onChange={handleChange} placeholder="標的" className="input focus:ring-2 focus:ring-accent/60 shadow-sm" required autoFocus />
+      <select name="side" value={form.side} onChange={handleChange} className="input focus:ring-2 focus:ring-accent/60 shadow-sm">
         <option value="buy">買進</option>
         <option value="sell">賣出</option>
       </select>
-      <input name="entry_price" value={form.entry_price} onChange={handleChange} placeholder="進場價" className="input" type="number" required />
-      <input name="stop_loss" value={form.stop_loss} onChange={handleChange} placeholder="停損價" className="input" type="number" />
-      <input name="take_profit" value={form.take_profit} onChange={handleChange} placeholder="停利價" className="input" type="number" />
-      <input name="screenshot" type="file" accept="image/*" onChange={handleFile} className="input" />
-      <div>風險回報比: {riskReward !== null ? riskReward.toFixed(2) : '—'}</div>
-      {error && <div className="text-red-600">{error}</div>}
-      <button type="submit" className="btn" disabled={loading}>{loading ? '儲存中...' : '儲存'}</button>
+      <div className="flex gap-3 flex-wrap">
+        <input name="entry_price" value={form.entry_price} onChange={handleChange} placeholder="進場價" className="input focus:ring-2 focus:ring-accent/60 shadow-sm flex-1" type="number" required />
+        <input name="stop_loss" value={form.stop_loss} onChange={handleChange} placeholder="停損價" className="input focus:ring-2 focus:ring-accent/60 shadow-sm flex-1" type="number" />
+        <input name="take_profit" value={form.take_profit} onChange={handleChange} placeholder="停利價" className="input focus:ring-2 focus:ring-accent/60 shadow-sm flex-1" type="number" />
+      </div>
+      <input name="screenshot" type="file" accept="image/*" onChange={handleFile} className="input focus:ring-2 focus:ring-accent/60 shadow-sm" />
+      <div className="text-accent font-mono text-lg">風險回報比: {riskReward !== null ? riskReward.toFixed(2) : '—'}</div>
+      {error && <div className="text-loss font-bold">{error}</div>}
+      <button type="submit" className="btn w-full text-lg py-3" disabled={loading}>{loading ? '儲存中...' : '儲存'}</button>
     </form>
   );
 };
