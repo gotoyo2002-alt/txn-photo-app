@@ -2,8 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+
 body {
   font-family: 'Inter', 'Nunito Sans', sans-serif;
   background: #1A202C;
   color: #fff;
+}
+
+/* 全站按鈕樣式 */
+.btn {
+  @apply px-4 py-2 rounded-lg font-bold bg-accent text-primary shadow hover:bg-accent/80 transition disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+/* 輸入框樣式 */
+.input {
+  @apply px-3 py-2 rounded bg-primary/60 border border-accent/30 text-white placeholder:text-gray-400 font-mono w-full focus:outline-accent/80 focus:ring-2 focus:ring-accent/40 transition;
+}
+
+/* 卡片樣式 */
+.kpi-card {
+  @apply bg-primary/80 rounded-xl px-6 py-4 flex flex-col items-center shadow-md min-w-[120px];
+}
+
+/* 表格樣式 */
+table {
+  @apply w-full text-sm rounded-xl overflow-hidden shadow-md bg-primary/70;
+}
+th, td {
+  @apply px-2 py-1;
+}
+th {
+  @apply text-accent font-mono;
+}
+tr {
+  @apply border-b border-accent/10 hover:bg-accent/10;
+}
+
+/* 響應式調整 */
+@media (max-width: 640px) {
+  .kpi-card, .btn, .input {
+    @apply px-2 py-1 text-sm;
+  }
+  .kpi-card {
+    @apply min-w-[80px];
+  }
 }
