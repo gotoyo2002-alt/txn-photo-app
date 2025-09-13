@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import supabase from '../api/supabase';
 
 interface TradeFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit?: () => void;
 }
 
 export const TradeForm: React.FC<TradeFormProps> = ({ onSubmit }) => {
@@ -14,6 +15,8 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onSubmit }) => {
     screenshot: null as File | null,
   });
   const [riskReward, setRiskReward] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, files } = e.target as any;
@@ -40,24 +43,63 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onSubmit }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
+    setLoading(true);
+    setError(null);
+    try {
+      let screenshot_url = null;
+      if (form.screenshot) {
+        const fileExt = form.screenshot.name.split('.').pop();
+        const fileName = `${form.symbol}_${Date.now()}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage.from('screenshots').upload(fileName, form.screenshot);
+        if (uploadError) throw uploadError;
+        screenshot_url = supabase.storage.from('screenshots').getPublicUrl(fileName).data.publicUrl;
+      }
+      // 自動計算 pnl（以 take_profit - entry_price 為例，實際可依需求調整）
+      const entry = Number(form.entry_price);
+      const exit = form.take_profit ? Number(form.take_profit) : entry;
+      const pnl = exit - entry;
+      const user_id = 'demo'; // 可改為登入用戶 id
+      const { error: insertError } = await supabase.from('trade_records').insert([
+        {
+          user_id,
+          symbol: form.symbol,
+          side: form.side,
+          entry_price: entry,
+          stop_loss: form.stop_loss ? Number(form.stop_loss) : null,
+          take_profit: form.take_profit ? Number(form.take_profit) : null,
+          exit_price: exit,
+          pnl,
+          screenshot_url,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      if (insertError) throw insertError;
+      setForm({ symbol: '', side: 'buy', entry_price: '', stop_loss: '', take_profit: '', screenshot: null });
+      setRiskReward(null);
+      if (onSubmit) onSubmit();
+    } catch (err: any) {
+      setError(err.message || '發生錯誤');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <input name="symbol" value={form.symbol} onChange={handleChange} placeholder="標的" className="input" />
+      <input name="symbol" value={form.symbol} onChange={handleChange} placeholder="標的" className="input" required />
       <select name="side" value={form.side} onChange={handleChange} className="input">
         <option value="buy">買進</option>
         <option value="sell">賣出</option>
       </select>
-      <input name="entry_price" value={form.entry_price} onChange={handleChange} placeholder="進場價" className="input" type="number" />
+      <input name="entry_price" value={form.entry_price} onChange={handleChange} placeholder="進場價" className="input" type="number" required />
       <input name="stop_loss" value={form.stop_loss} onChange={handleChange} placeholder="停損價" className="input" type="number" />
       <input name="take_profit" value={form.take_profit} onChange={handleChange} placeholder="停利價" className="input" type="number" />
       <input name="screenshot" type="file" accept="image/*" onChange={handleFile} className="input" />
       <div>風險回報比: {riskReward !== null ? riskReward.toFixed(2) : '—'}</div>
-      <button type="submit" className="btn">儲存</button>
+      {error && <div className="text-red-600">{error}</div>}
+      <button type="submit" className="btn" disabled={loading}>{loading ? '儲存中...' : '儲存'}</button>
     </form>
   );
 };
