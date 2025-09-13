@@ -1,0 +1,6 @@
+# This file tells search engines which files they should not request from your site
+# For more information about the robots.txt standard, see:
+# http://www.robotstxt.org/orig.html
+
+User-agent: *
+Disallow:
