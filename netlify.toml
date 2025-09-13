@@ -1,3 +1,33 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm run build --force"
+
+[[plugins]]
+  package = "@netlify/plugin-cache-core"
+
+[build.environment]
+  NODE_VERSION = "18"
+  CI = "true"
+  FORCE_COLOR = "1"
+
+[context.production.environment]
+  NODE_ENV = "production"
+  CI = "true"
+  FORCE_COLOR = "1"
+
+[context.production]
+  command = "npm ci && npm run build --force"
+  publish = "dist"
+
+[context.deploy-preview]
+  command = "npm ci && npm run build --force"
+  publish = "dist"
+
+[context.branch-deploy]
+  command = "npm ci && npm run build --force"
+  publish = "dist"
+
+[[plugins]]
+  package = "@netlify/plugin-gatsby-cache"
+  # 這個外掛即使不是 Gatsby 也能強制清除 node_modules/.cache
+  # 若不是 Gatsby 專案，Netlify 會自動忽略
