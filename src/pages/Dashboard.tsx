@@ -65,66 +65,66 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-2">
-      <h2 className="text-2xl font-bold mb-6 tracking-tight text-accent">儀表板</h2>
+      <h2 className="text-3xl font-extrabold mb-8 tracking-tight text-accent drop-shadow-lg">儀表板</h2>
       {error && <div className="text-loss font-bold mb-2">{error}</div>}
       {loading ? (
-        <div className="text-lg text-gray-300">載入中...</div>
+        <div className="text-lg text-gray-300 animate-pulse">載入中...</div>
       ) : (
         <>
           {/* KPI 卡片列 */}
-          <div className="flex gap-4 mb-8">
-            <KpiCard label="總損益" value={total_pnl.toFixed(0)} trend={pnl_trend as any} color={total_pnl >= 0 ? '#228B22' : '#DC143C'} />
-            <KpiCard label="勝率" value={`${(win_rate * 100).toFixed(1)}%`} trend={win_trend as any} color="#FBBF24" />
-            <KpiCard label="平均風險回報比" value={avg_risk_reward.toFixed(2)} />
+          <div className="flex gap-6 mb-10 flex-wrap justify-center">
+            <KpiCard label="總損益" value={total_pnl.toFixed(0)} trend={pnl_trend as any} color={total_pnl >= 0 ? '#228B22' : '#DC143C'} className="bg-gradient-to-br from-accent/30 to-primary/90 shadow-2xl hover:scale-105 hover:shadow-accent/40 transition-transform duration-200" />
+            <KpiCard label="勝率" value={`${(win_rate * 100).toFixed(1)}%`} trend={win_trend as any} color="#FBBF24" className="bg-gradient-to-br from-primary/80 to-accent/20 shadow-2xl hover:scale-105 hover:shadow-accent/40 transition-transform duration-200" />
+            <KpiCard label="平均風險回報比" value={avg_risk_reward.toFixed(2)} className="bg-gradient-to-br from-primary/70 to-accent/10 shadow-2xl hover:scale-105 hover:shadow-accent/40 transition-transform duration-200" />
           </div>
           {/* 權益曲線 */}
-          <div className="bg-primary/70 rounded-xl p-6 mb-8 shadow-md">
-            <h3 className="text-lg font-bold mb-2 text-accent">權益曲線</h3>
+          <div className="rounded-2xl p-8 mb-10 shadow-xl bg-gradient-to-br from-primary/80 via-primary/60 to-accent/10 border border-accent/10 animate-fade-in">
+            <h3 className="text-xl font-bold mb-4 text-accent drop-shadow">權益曲線</h3>
             <div className="w-full overflow-x-auto">
               <svg width={Math.max(320, equityCurve.length * 40)} height="120">
                 <defs>
                   <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
+                    <stop offset="0%" stopColor="#FBBF24" stopOpacity="0.8" />
                     <stop offset="100%" stopColor="#1A202C" stopOpacity="0.2" />
                   </linearGradient>
                 </defs>
                 <polyline
                   fill="none"
                   stroke="url(#equityGradient)"
-                  strokeWidth="3"
+                  strokeWidth="4"
                   points={equityCurve.map((p, i) => `${i * 40},${110 - (p.equity - 10000) / 10}`).join(' ')}
+                  style={{ filter: 'drop-shadow(0 2px 8px #FBBF2440)' }}
                 />
-                {/* 標記點 */}
                 {equityCurve.map((p, i) => (
-                  <circle key={i} cx={i * 40} cy={110 - (p.equity - 10000) / 10} r="2.5" fill="#FBBF24" />
+                  <circle key={i} cx={i * 40} cy={110 - (p.equity - 10000) / 10} r="3.5" fill="#FBBF24" stroke="#fff" strokeWidth="1" />
                 ))}
               </svg>
             </div>
           </div>
           {/* 近期交易快覽 */}
-          <div className="bg-primary/60 rounded-xl p-6 shadow-md">
-            <h3 className="text-lg font-bold mb-3 text-accent">近期交易</h3>
+          <div className="rounded-2xl p-8 shadow-xl bg-gradient-to-br from-primary/70 via-primary/60 to-accent/10 border border-accent/10 animate-fade-in">
+            <h3 className="text-xl font-bold mb-4 text-accent drop-shadow">近期交易</h3>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
+              <table className="min-w-full text-base rounded-xl overflow-hidden shadow bg-primary/80">
                 <thead>
                   <tr className="text-accent border-b border-accent/30">
-                    <th className="px-2 py-1 font-mono">#</th>
-                    <th className="px-2 py-1">商品</th>
-                    <th className="px-2 py-1">方向</th>
-                    <th className="px-2 py-1">進場</th>
-                    <th className="px-2 py-1">出場</th>
-                    <th className="px-2 py-1">損益</th>
+                    <th className="px-3 py-2 font-mono">#</th>
+                    <th className="px-3 py-2">商品</th>
+                    <th className="px-3 py-2">方向</th>
+                    <th className="px-3 py-2">進場</th>
+                    <th className="px-3 py-2">出場</th>
+                    <th className="px-3 py-2">損益</th>
                   </tr>
                 </thead>
                 <tbody>
                   {trades.slice(-5).reverse().map((t, i) => (
-                    <tr key={t.id} className="border-b border-accent/10 hover:bg-accent/10">
-                      <td className="px-2 py-1 font-mono text-xs text-gray-400">{trades.length - i}</td>
-                      <td className="px-2 py-1 font-bold">{t.symbol}</td>
-                      <td className={`px-2 py-1 font-mono ${t.side === 'long' ? 'text-profit' : 'text-loss'}`}>{t.side === 'long' ? '多' : '空'}</td>
-                      <td className="px-2 py-1 font-mono">{t.entry_price}</td>
-                      <td className="px-2 py-1 font-mono">{t.exit_price ?? '-'}</td>
-                      <td className={`px-2 py-1 font-mono font-bold ${t.pnl && t.pnl > 0 ? 'text-profit' : t.pnl && t.pnl < 0 ? 'text-loss' : ''}`}>{t.pnl?.toFixed(0) ?? '-'}</td>
+                    <tr key={t.id} className="border-b border-accent/10 hover:bg-accent/20 transition-colors duration-150">
+                      <td className="px-3 py-2 font-mono text-xs text-gray-400">{trades.length - i}</td>
+                      <td className="px-3 py-2 font-bold">{t.symbol}</td>
+                      <td className={`px-3 py-2 font-mono ${t.side === 'long' ? 'text-profit' : 'text-loss'}`}>{t.side === 'long' ? '多' : '空'}</td>
+                      <td className="px-3 py-2 font-mono">{t.entry_price}</td>
+                      <td className="px-3 py-2 font-mono">{t.exit_price ?? '-'}</td>
+                      <td className={`px-3 py-2 font-mono font-bold ${t.pnl && t.pnl > 0 ? 'text-profit' : t.pnl && t.pnl < 0 ? 'text-loss' : ''}`}>{t.pnl?.toFixed(0) ?? '-'}</td>
                     </tr>
                   ))}
                 </tbody>

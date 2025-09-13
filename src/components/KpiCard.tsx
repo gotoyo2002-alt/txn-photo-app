@@ -16,13 +16,14 @@ const arrow = {
 const KpiCard: React.FC<KpiCardProps> = ({ label, value, trend = null, color = '', className = '' }) => {
   return (
     <div
-      className={`bg-primary/80 rounded-xl px-6 py-4 flex flex-col items-center shadow-md min-w-[120px] ${className}`}
+      className={`rounded-2xl px-8 py-6 flex flex-col items-center shadow-2xl min-w-[140px] bg-gradient-to-br from-accent/20 to-primary/90 border border-accent/10 hover:scale-105 hover:shadow-accent/40 transition-transform duration-200 ${className}`}
+      style={{ boxShadow: '0 4px 24px 0 #FBBF2430' }}
     >
-      <span className="text-xs text-accent tracking-widest mb-1">{label}</span>
-      <span className="font-mono text-2xl font-bold flex items-center gap-1" style={{ color }}>
+      <span className="text-xs text-accent tracking-widest mb-2 font-bold drop-shadow">{label}</span>
+      <span className="font-mono text-3xl font-extrabold flex items-center gap-2 drop-shadow-lg" style={{ color }}>
         {value}
         {trend && (
-          <span className={trend === 'up' ? 'text-profit' : 'text-loss'}>{arrow[trend]}</span>
+          <span className={trend === 'up' ? 'text-profit' : 'text-loss'} style={{ fontSize: 18 }}>{arrow[trend]}</span>
         )}
       </span>
     </div>
